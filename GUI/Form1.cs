@@ -15,6 +15,8 @@ namespace GUI
     public partial class Form1 : Form
     {
         Employee_BUS nvBUS = new Employee_BUS();
+        Department_BUS DepartmentBUS = new Department_BUS();
+
         public Form1()
         {
             InitializeComponent();
@@ -24,18 +26,26 @@ namespace GUI
             List<Employee_DTO> lstNv = nvBUS.ReadEmployee();
             foreach (Employee_DTO nv in lstNv)
             {
-                dgvEmployee.Rows.Add(nv.IdEmployee, nv.Name, nv.DateBirth, nv.Gender, nv.PlaceBirth, nv.IdDepartment);
+                dgvEmployee.Rows.Add(nv.IdEmployee, nv.Name, nv.DateBirth, nv.Gender, nv.PlaceBirth, nv.DepamentName);
             }
+            List<Department_DTO> lstDepartment = DepartmentBUS.ReadDepartmentList();
+            foreach (Department_DTO Department in lstDepartment)
+            {
+                combodonvi.Items.Add(Department);
+            }
+            combodonvi.DisplayMember = "Name";
+
         }
         private void dgvEmployee_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
             int idx = e.RowIndex;
-            tbmanv.Text = dgvEmployee.Rows[idx].Cells[0].Value.ToString();
-            tbhoten.Text = dgvEmployee.Rows[idx].Cells[1].Value.ToString();
-            dtngaysinh.Text = dgvEmployee.Rows[idx].Cells[2].Value.ToString();
-            cbgioitinh.Checked = (bool)dgvEmployee.Rows[idx].Cells[3].Value;
-            tbnoisinh.Text = dgvEmployee.Rows[idx].Cells[4].Value.ToString();
-            combodonvi.Text = dgvEmployee.Rows[idx].Cells[5].Value.ToString();
+            DataGridViewRow row = dgvEmployee.Rows[idx];
+            tbmanv.Text = row.Cells[0].Value.ToString();
+            tbhoten.Text = row.Cells[1].Value.ToString();
+            dtngaysinh.Text = row.Cells[2].Value.ToString();
+            cbgioitinh.Checked = (bool)row.Cells[3].Value;
+            tbnoisinh.Text = row.Cells[4].Value.ToString();
+            combodonvi.Text = row.Cells[5].Value.ToString();
         }
 
         private void btnthem_Click(object sender, EventArgs e)
@@ -55,13 +65,11 @@ namespace GUI
                 nv.DateBirth = DateTime.Parse(dtngaysinh.Text);
                 nv.Gender = cbgioitinh.Checked;
                 nv.PlaceBirth = tbnoisinh.Text;
-                nv.IdDepartment = combodonvi.Text;
+                nv.Department = (Department_DTO)combodonvi.SelectedItem;
 
                 nvBUS.NewEmployee(nv);
 
-                dgvEmployee.Rows.Add(nv.IdEmployee, nv.Name, nv.DateBirth, nv.Gender, nv.PlaceBirth, nv.IdDepartment);
-
-
+                dgvEmployee.Rows.Add(nv.IdEmployee, nv.Name, nv.DateBirth, nv.Gender, nv.PlaceBirth, nv.Department.Name);
             }
 
         }
@@ -79,7 +87,7 @@ namespace GUI
                 nv.DateBirth = DateTime.Parse(dtngaysinh.Text);
                 nv.Gender = cbgioitinh.Checked;
                 nv.PlaceBirth = tbnoisinh.Text;
-                nv.IdDepartment = combodonvi.Text;
+                nv.Department = (Department_DTO)combodonvi.SelectedItem;
 
                 nvBUS.DeleteEmployee(nv);
 
@@ -111,7 +119,7 @@ namespace GUI
                     nv.DateBirth = DateTime.Parse(dtngaysinh.Text);
                     nv.Gender = cbgioitinh.Checked;
                     nv.PlaceBirth = tbnoisinh.Text;
-                    nv.IdDepartment = combodonvi.Text;
+                    nv.Department = (Department_DTO)combodonvi.SelectedItem;
 
                     nvBUS.EditEmployee(nv);
 
@@ -120,7 +128,7 @@ namespace GUI
                     row.Cells[2].Value = nv.DateBirth;
                     row.Cells[3].Value = nv.Gender;
                     row.Cells[4].Value = nv.PlaceBirth;
-                    row.Cells[5].Value = nv.IdDepartment;
+                    row.Cells[5].Value = nv.Department.Name;
                 }
             }
 
@@ -128,7 +136,7 @@ namespace GUI
 
         private void btnthoat_Click(object sender, EventArgs e)
         {
-            var confirmResult = MessageBox.Show("Bạn có chắc muốn xóa nhân viên này?",
+            var confirmResult = MessageBox.Show("Bạn có thật sự muốn thoát?",
                                      "Cảnh Báo!!",
                                      MessageBoxButtons.YesNo);
             if (confirmResult == DialogResult.Yes)

@@ -23,6 +23,8 @@ namespace DAL
             cmd.Connection = conn;
             SqlDataReader reader = cmd.ExecuteReader();
             List<Employee_DTO> lstNv = new List<Employee_DTO>();
+            Department_DAL department = new Department_DAL();
+
             while (reader.Read())
             {
                 Employee_DTO nv = new Employee_DTO();
@@ -31,7 +33,7 @@ namespace DAL
                 nv.DateBirth = DateTime.Parse(reader["DateBirth"].ToString());
                 nv.Gender = bool.Parse(reader["Gender"].ToString());
                 nv.PlaceBirth = reader["PlaceBirth"].ToString();
-                nv.IdDepartment = reader["IdDepartment"].ToString();
+                nv.Department = department.ReadDepartment(reader["IdDepartment"].ToString());
                 lstNv.Add(nv);
             }
             conn.Close();
@@ -68,7 +70,7 @@ namespace DAL
             cmd.Parameters.Add(new SqlParameter("@DateBirth", nv.DateBirth));
             cmd.Parameters.Add(new SqlParameter("@Gender", nv.Gender));
             cmd.Parameters.Add(new SqlParameter("@PlaceBirth", nv.PlaceBirth));
-            cmd.Parameters.Add(new SqlParameter("@IdDepartment", nv.IdDepartment));
+            cmd.Parameters.Add(new SqlParameter("@IdDepartment", nv.Department.IdDepartment));
             cmd.ExecuteNonQuery();
             conn.Close();
         }
@@ -87,7 +89,7 @@ namespace DAL
             cmd.Parameters.Add(new SqlParameter("@DateBirth", nv.DateBirth));
             cmd.Parameters.Add(new SqlParameter("@Gender", nv.Gender));
             cmd.Parameters.Add(new SqlParameter("@PlaceBirth", nv.PlaceBirth));
-            cmd.Parameters.Add(new SqlParameter("@IdDepartment", nv.IdDepartment));
+            cmd.Parameters.Add(new SqlParameter("@IdDepartment", nv.Department.IdDepartment));
             cmd.ExecuteNonQuery();
             conn.Close();
         }

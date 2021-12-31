@@ -16,7 +16,7 @@ namespace DTO
         public string PlaceBirth { get; set; }
 
         public Department_DTO Department { get; set; }
-        public string IdDepartment
+        public string DepamentName
         {
 
             get { return Department.Name; }
